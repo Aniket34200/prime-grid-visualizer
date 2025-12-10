@@ -31,6 +31,11 @@
     .legend span{display:inline-flex;align-items:center;gap:6px}
     .swatch{width:14px;height:14px;border-radius:3px;display:inline-block}
     .stats-line{font-size:13px;color:#333;}
+    @media (max-width:600px){
+      .controls{gap:6px;}
+      .controls label{font-size:12px;}
+      button{padding:6px 10px}
+    }
   </style>
 </head>
 <body>
@@ -62,7 +67,7 @@
     </div>
 
     <div class="canvas-wrap" id="canvasWrap">
-      <canvas id="gridCanvas"></canvas>
+      <canvas id="gridCanvas" role="img" aria-label="Prime grid"></canvas>
     </div>
 
     <div class="footer">
@@ -77,24 +82,28 @@
     </div>
   </div>
 
-  <div class="tooltip" id="tooltip"></div>
+  <div class="tooltip" id="tooltip" aria-hidden="true"></div>
 
   <script>
+  // ---------- Prime Sieve ----------
   function sieve(n){
-    const prime = new Uint8Array(n+1);
+    const arr = new Uint8Array(Math.max(2, n+1)); // ensure length >=2
     if(n >= 2){
-      for(let i=2;i<=n;i++) prime[i]=1;
+      for(let i=2;i<=n;i++) arr[i]=1;
       const lim = Math.floor(Math.sqrt(n));
       for(let p=2;p<=lim;p++){
-        if(prime[p]){
-          for(let j=p*p;j<=n;j+=p) prime[j]=0;
+        if(arr[p]){
+          for(let j=p*p;j<=n;j+=p) arr[j]=0;
         }
       }
     }
-    prime[1] = 2;
-    return prime;
+    // special markers
+    arr[0] = 0;
+    if(n >= 1) arr[1] = 2; // special value meaning "neither prime nor composite"
+    return arr;
   }
 
+  // ---------- DOM ----------
   const nInput = document.getElementById('nInput');
   const colsInput = document.getElementById('colsInput');
   const cellInput = document.getElementById('cellInput');
@@ -117,22 +126,28 @@
 
   let state = { n:0, cols:10, cell:36, primeArr:null, rows:0, totalCells:0 };
 
+  // ---------- Draw Grid (supports DPR) ----------
   function drawGrid(highlightCell=null){
     const { n, cols, cell, primeArr, rows } = state;
     const w = cols * cell;
     const h = rows * cell;
 
+    // device pixel ratio handling
     const dpr = window.devicePixelRatio || 1;
+    // CSS size (what user sees)
     canvas.style.width = w + 'px';
     canvas.style.height = h + 'px';
+    // backing store size
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
 
     const ctx = canvas.getContext('2d');
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    // Make drawing units = CSS pixels
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+    // background
     ctx.fillStyle = GRID_BG;
-    ctx.fillRect(0,0,w,h);
+    ctx.fillRect(0, 0, w, h);
 
     let idx = 1;
     for(let r=0;r<rows;r++){
@@ -145,31 +160,172 @@
 
         ctx.fillRect(x, y, cell, cell);
         ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.strokeRect(x+0.5, y+0.5, cell-1, cell-1);
+        ctx.strokeRect(x + 0.5, y + 0.5, cell - 1, cell - 1);
       }
     }
 
     if(highlightCell){
-      const [r,c] = highlightCell;
+      const [r, c] = highlightCell;
       ctx.save();
       ctx.globalAlpha = 0.45;
       ctx.fillStyle = COLOR_HIGHLIGHT;
-      ctx.fillRect(c*cell, r*cell, cell, cell);
+      ctx.fillRect(c * cell, r * cell, cell, cell);
       ctx.restore();
     }
   }
 
+  // ---------- Stats ----------
   function updateStats(){
     const { n, cols, primeArr, rows } = state;
+    if(!primeArr) { statsDiv.textContent = '—'; return; }
 
     let primeCount = 0, compositeCount = 0;
     for(let i=2;i<=n;i++){
       if(primeArr[i] === 1) primeCount++;
       else compositeCount++;
     }
-
+    const beyondCount = state.totalCells - n;
     const colCounts = Array(cols).fill(0);
     let idx = 1;
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++, idx++){
         if(idx <= n && primeArr[idx] === 1) colCounts[c]++;
+      }
+    }
+    const pct = n > 0 ? (primeCount / n * 100) : 0;
+    statsDiv.textContent =
+      `Primes: ${primeCount} | Composites: ${compositeCount} | 1: 1 | Beyond: ${beyondCount} | Prime %: ${pct.toFixed(2)}% | Columns: [${colCounts.join(", ")}]`;
+  }
+
+  function updateStatus(msg){ status.textContent = msg; }
+
+  // ---------- Generate ----------
+  function generate(){
+    let n = Math.max(1, Math.floor(Number(nInput.value) || 0));
+    const cols = Math.max(5, Math.min(200, Math.floor(Number(colsInput.value) || 10)));
+    const cell = Math.max(6, Math.min(80, Math.floor(Number(cellInput.value) || 36)));
+
+    updateStatus('Computing primes...');
+    // small delay to allow UI update
+    setTimeout(()=>{
+      const t0 = performance.now();
+      const primeArr = sieve(n);
+      const rows = Math.ceil(n / cols) || 1;
+      state = { n, cols, cell, primeArr, rows, totalCells: rows * cols };
+
+      drawGrid();
+      updateStats();
+
+      const t1 = performance.now();
+      updateStatus(`Generated up to ${n} in ${Math.round(t1 - t0)} ms`);
+    }, 10);
+  }
+
+  // ---------- Tooltip (correct mapping) ----------
+  canvas.addEventListener('mousemove', ev => {
+    // get CSS coordinates relative to canvas
+    const rect = canvas.getBoundingClientRect();
+    const cssX = ev.clientX - rect.left;
+    const cssY = ev.clientY - rect.top;
+
+    // compute column/row in CSS pixels (we draw with CSS-pixel units)
+    const col = Math.floor(cssX / state.cell);
+    const row = Math.floor(cssY / state.cell);
+
+    if(col < 0 || row < 0 || col >= state.cols || row >= state.rows){
+      tooltip.style.display = 'none';
+      return;
+    }
+
+    const index = row * state.cols + col + 1;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (ev.clientX + 12) + 'px';
+    tooltip.style.top = (ev.clientY + 12) + 'px';
+
+    if(index === 1){
+      tooltip.textContent = `1 — neither prime nor composite`;
+    } else if(index > state.n){
+      tooltip.textContent = `${index} (beyond n)`;
+    } else {
+      tooltip.textContent = `${index} — ${state.primeArr[index] ? 'prime' : 'composite'}`;
+    }
+  });
+
+  canvas.addEventListener('mouseleave', ()=> tooltip.style.display = 'none');
+
+  // ---------- Jump to Number (highlight flash) ----------
+  function jumpToNumber(num){
+    if(!state.primeArr) return;
+    num = Math.max(1, Math.min(state.totalCells, Math.floor(num) || 1));
+    const idx = num - 1;
+    const row = Math.floor(idx / state.cols);
+    const col = idx % state.cols;
+
+    const targetX = col * state.cell;
+    const targetY = row * state.cell;
+
+    const wrapRect = canvasWrap.getBoundingClientRect();
+    const scrollLeft = Math.max(0, targetX - wrapRect.width/2 + state.cell/2);
+    const scrollTop  = Math.max(0, targetY - wrapRect.height/2 + state.cell/2);
+
+    canvasWrap.scrollTo({left: scrollLeft, top: scrollTop, behavior: 'smooth'});
+
+    drawGrid([row, col]);               // draw with highlight
+    setTimeout(()=> drawGrid(), 220);   // remove highlight after flash
+  }
+
+  jumpBtn.addEventListener('click', ()=>{
+    const v = Number(jumpInput.value);
+    if(v) jumpToNumber(v);
+  });
+
+  // ---------- Export PNG ----------
+  exportBtn.addEventListener('click', ()=>{
+    if(!state.primeArr) return;
+    // Create a copy canvas at same CSS size but with full DPR backing to ensure export resolution matches what user sees
+    const dpr = window.devicePixelRatio || 1;
+    const w = state.cols * state.cell;
+    const h = state.rows * state.cell;
+    const tmp = document.createElement('canvas');
+    tmp.width = Math.round(w * dpr);
+    tmp.height = Math.round(h * dpr);
+    tmp.style.width = w + 'px';
+    tmp.style.height = h + 'px';
+    const tctx = tmp.getContext('2d');
+    tctx.setTransform(dpr,0,0,dpr,0,0);
+
+    // draw same content
+    let idx = 1;
+    for(let r=0;r<state.rows;r++){
+      for(let c=0;c<state.cols;c++, idx++){
+        const x = c * state.cell, y = r * state.cell;
+        if(idx === 1) tctx.fillStyle = COLOR_SPECIAL;
+        else if(idx > state.n) tctx.fillStyle = COLOR_BEYOND;
+        else tctx.fillStyle = (state.primeArr[idx] === 1 ? COLOR_PRIME : COLOR_COMPOSITE);
+        tctx.fillRect(x,y,state.cell,state.cell);
+        tctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        tctx.strokeRect(x + 0.5, y + 0.5, state.cell - 1, state.cell - 1);
+      }
+    }
+
+    const url = tmp.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `prime-grid-n${state.n}-cols${state.cols}.png`;
+    a.click();
+  });
+
+  // ---------- Events ----------
+  generateBtn.addEventListener('click', ()=>{
+    generateBtn.disabled = true;
+    setTimeout(()=>{ generate(); generateBtn.disabled = false; }, 10);
+  });
+
+  nInput.addEventListener('keydown', e => { if(e.key === 'Enter') generateBtn.click(); });
+  jumpInput.addEventListener('keydown', e => { if(e.key === 'Enter') jumpBtn.click(); });
+
+  // initial render
+  window.addEventListener('load', ()=> generate());
+  </script>
+</body>
+</html>
